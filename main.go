@@ -1,12 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
 )
 
+type Page struct {
+	Title string
+	Body  []byte
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	p := &Page{
+		Title: "Title",
+		Body:  []byte("This is a sample Page."),
+	}
+	t, _ := template.ParseFiles("index.html")
+	t.Execute(w, p)
 }
 
 func main() {
