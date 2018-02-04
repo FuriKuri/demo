@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"net/http"
+	"os"
 )
 
 type Page struct {
@@ -12,8 +13,8 @@ type Page struct {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	p := &Page{
-		Title: "Title",
-		Body:  []byte("This is a sample Page."),
+		Title: os.Getenv("HTML_TITLE"),
+		Body:  []byte(os.Getenv("HTML_BODY")),
 	}
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, p)
