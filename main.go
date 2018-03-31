@@ -25,7 +25,6 @@ func host(w http.ResponseWriter, r *http.Request) {
 }
 
 func httpRequest(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.Path[6:])
 	resp, err := http.Get("http://" + r.URL.Path[6:])
 	if err != nil {
 		// handle error
