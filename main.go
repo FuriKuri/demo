@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"fmt"
+	"github.com/gorilla/mux"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -24,7 +25,8 @@ func host(w http.ResponseWriter, r *http.Request) {
 }
 
 func httpRequest(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("http://example.com/")
+	fmt.Println(r.URL.Path[6:])
+	resp, err := http.Get("http://" + r.URL.Path[6:])
 	if err != nil {
 		// handle error
 	}
@@ -66,11 +68,12 @@ func html(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/host", host)
-	http.HandleFunc("/raw", raw)
-	http.HandleFunc("/random", random)
-	http.HandleFunc("/html", html)
-	http.HandleFunc("/http", httpRequest)
-	http.HandleFunc("/", raw)
-	http.ListenAndServe(":8080", nil)
+	r := mux.NewRouter()
+	r.HandleFunc("/host", host)
+	r.HandleFunc("/raw", raw)
+	r.HandleFunc("/random", random)
+	r.HandleFunc("/html", html)
+	r.PathPrefix("/http/").HandlerFunc(httpRequest)
+	r.HandleFunc("/", raw)
+	http.ListenAndServe(":8080", r)
 }
