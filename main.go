@@ -8,20 +8,29 @@ import (
 	"os"
 )
 
-type Page struct {
+type page struct {
 	Title string
 	Body  []byte
+}
+
+func host(w http.ResponseWriter, r *http.Request) {
+	name, err := os.Hostname()
+	if err != nil {
+		fmt.Fprintf(w, "unknown hostname")
+	} else {
+		fmt.Fprintf(w, name)
+	}
 }
 
 func raw(w http.ResponseWriter, r *http.Request) {
 	value, exists := os.LookupEnv("RAW_CONTENT")
 	if !exists {
-		value = pseudo_uuid()
+		value = pseudoUUID()
 	}
 	fmt.Fprintf(w, value)
 }
 
-func pseudo_uuid() string {
+func pseudoUUID() string {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)
 	if err != nil {
@@ -32,8 +41,8 @@ func pseudo_uuid() string {
 	return fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	p := &Page{
+func html(w http.ResponseWriter, r *http.Request) {
+	p := &page{
 		Title: os.Getenv("HTML_TITLE"),
 		Body:  []byte(os.Getenv("HTML_BODY")),
 	}
@@ -42,7 +51,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	http.HandleFunc("/host", host)
 	http.HandleFunc("/raw", raw)
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/html", html)
+	http.HandleFunc("/", raw)
 	http.ListenAndServe(":8080", nil)
 }
