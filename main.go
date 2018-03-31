@@ -22,10 +22,14 @@ func host(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func random(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, pseudoUUID())
+}
+
 func raw(w http.ResponseWriter, r *http.Request) {
 	value, exists := os.LookupEnv("RAW_CONTENT")
 	if !exists {
-		value = pseudoUUID()
+		value = "raw"
 	}
 	fmt.Fprintf(w, value)
 }
@@ -53,6 +57,7 @@ func html(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/host", host)
 	http.HandleFunc("/raw", raw)
+	http.HandleFunc("/random", random)
 	http.HandleFunc("/html", html)
 	http.HandleFunc("/", raw)
 	http.ListenAndServe(":8080", nil)
