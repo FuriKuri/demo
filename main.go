@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -20,6 +21,16 @@ func host(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Fprintf(w, name)
 	}
+}
+
+func httpRequest(w http.ResponseWriter, r *http.Request) {
+	resp, err := http.Get("http://example.com/")
+	if err != nil {
+		// handle error
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Fprintf(w, string(body[:]))
 }
 
 func random(w http.ResponseWriter, r *http.Request) {
@@ -59,6 +70,7 @@ func main() {
 	http.HandleFunc("/raw", raw)
 	http.HandleFunc("/random", random)
 	http.HandleFunc("/html", html)
+	http.HandleFunc("/http", httpRequest)
 	http.HandleFunc("/", raw)
 	http.ListenAndServe(":8080", nil)
 }
