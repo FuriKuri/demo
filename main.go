@@ -105,5 +105,6 @@ func main() {
 	r.HandleFunc("/html", html)
 	r.PathPrefix("/http/").HandlerFunc(httpRequest)
 	r.HandleFunc("/", raw)
+	fmt.Println("Listen on port 8080...")
 	http.ListenAndServe(":8080", r)
 }
