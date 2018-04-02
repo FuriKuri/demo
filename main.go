@@ -8,7 +8,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type page struct {
@@ -85,12 +87,21 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", request)
 }
 
+func delay(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	delay, _ := strconv.Atoi(vars["time"])
+	fmt.Println(delay)
+	time.Sleep(time.Duration(delay) * time.Second)
+	fmt.Fprintf(w, "delay: "+vars["time"])
+}
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/host", host)
 	r.HandleFunc("/echo", echo)
 	r.HandleFunc("/raw", raw)
 	r.HandleFunc("/random", random)
+	r.HandleFunc("/delay/{time:[0-9]+}", delay)
 	r.HandleFunc("/html", html)
 	r.PathPrefix("/http/").HandlerFunc(httpRequest)
 	r.HandleFunc("/", raw)
