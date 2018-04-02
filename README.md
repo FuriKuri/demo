@@ -93,7 +93,7 @@ Date: Mon, 02 Apr 2018 13:02:19 GMT
 </html>
 ```
 
-**/delay/<seconds>** delay the response
+**/delay/{seconds}** delay the response
 
 ```
 $ time http localhost:8080/delay/4
@@ -107,7 +107,7 @@ delay: 4
 http localhost:8080/delay/4  0,36s user 0,06s system 9% cpu 4,130 total
 ```
 
-**/http/<url>** do a http request to another url
+**/http/{url}** do a http request to another url
 
 ```
 $ http localhost:8080/http/other-server:8080/path
