@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type page struct {
@@ -66,9 +67,28 @@ func html(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+func echo(w http.ResponseWriter, r *http.Request) {
+	var request string
+	url := fmt.Sprintf("%v %v %v", r.Method, r.URL, r.Proto)
+	request += url
+	request += fmt.Sprintf("Host: %v", r.Host)
+	for name, headers := range r.Header {
+		name = strings.ToLower(name)
+		for _, h := range headers {
+			request += fmt.Sprintf("%v: %v", name, h)
+		}
+	}
+
+	bodyBuffer, _ := ioutil.ReadAll(r.Body)
+	request += fmt.Sprintf("Body: %v", string(bodyBuffer))
+
+	fmt.Fprintf(w, "%s", request)
+}
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/host", host)
+	r.HandleFunc("/echo", echo)
 	r.HandleFunc("/raw", raw)
 	r.HandleFunc("/random", random)
 	r.HandleFunc("/html", html)
