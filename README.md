@@ -4,8 +4,28 @@
 
 ### Start server
 
+In docker
+
 ```
 $ docker run -p 8080:8080 furikuri/demo
+
+$ http localhost:8080/host
+```
+
+or in a kubernetes cluster
+
+```
+$ kubectl apply -f https://raw.githubusercontent.com/FuriKuri/demo/master/deploy.yaml
+
+$ http 127.0.0.1:8001/api/v1/namespaces/default/services/http:client:80/proxy/http/server/host
+```
+
+or in docker swarm
+
+```
+$ docker stack deploy --compose-file compose.yaml stackdemo
+
+$ http 127.0.0.1:8080/http/server/host
 ```
 
 ### Endpoints

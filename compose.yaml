@@ -1,0 +1,14 @@
+version: '3.2'
+services:
+  client:
+    image: "furikuri/demo"
+    ports:
+      - "8080:8080"
+    networks:
+      - demo-net
+  server:
+    image: "furikuri/demo"
+    networks:
+      - demo-net
+networks:
+  demo-net:
