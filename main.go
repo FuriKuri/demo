@@ -73,16 +73,16 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	var request string
 	url := fmt.Sprintf("%v %v %v", r.Method, r.URL, r.Proto)
 	request += url
-	request += fmt.Sprintf("Host: %v", r.Host)
+	request += fmt.Sprintf("\nHost: %v", r.Host)
 	for name, headers := range r.Header {
 		name = strings.ToLower(name)
 		for _, h := range headers {
-			request += fmt.Sprintf("%v: %v", name, h)
+			request += fmt.Sprintf("\n%v: %v", name, h)
 		}
 	}
 
 	bodyBuffer, _ := ioutil.ReadAll(r.Body)
-	request += fmt.Sprintf("Body: %v", string(bodyBuffer))
+	request += fmt.Sprintf("\n\nBody: %v", string(bodyBuffer))
 
 	fmt.Fprintf(w, "%s", request)
 }
