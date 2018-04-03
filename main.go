@@ -95,10 +95,15 @@ func delay(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "delay: "+vars["time"])
 }
 
+func exit(w http.ResponseWriter, r *http.Request) {
+	os.Exit(1)
+}
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/host", host)
 	r.HandleFunc("/echo", echo)
+	r.HandleFunc("/exit", exit)
 	r.HandleFunc("/raw", raw)
 	r.HandleFunc("/random", random)
 	r.HandleFunc("/delay/{time:[0-9]+}", delay)
